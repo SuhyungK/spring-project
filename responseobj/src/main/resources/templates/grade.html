@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>성적 정보</title>
+</head>
+<body>
+
+<h2>성적 정보 입력하기</h2>
+
+<form th:action method="post">
+  <!-- 성적 입력 칸 -->
+  <label for="grade">성적 입력:</label>
+  <input type="text" id="grade" name="grade" />
+
+  <br/>
+
+  <!-- 폼 제출 버튼 -->
+  <input type="submit" value="제출" />
+</form>
+
+</body>
+</html>
