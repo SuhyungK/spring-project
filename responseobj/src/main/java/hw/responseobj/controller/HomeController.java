@@ -9,7 +9,7 @@ public class HomeController {
 
     @RequestMapping("/")
     public String home() {
-        return "redirect:/api/score";
+        return "redirect:/api/student";
     }
 
     @GetMapping("/api/student")

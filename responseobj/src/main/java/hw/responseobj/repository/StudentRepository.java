@@ -1,6 +1,7 @@
 package hw.responseobj.repository;
 
 import hw.responseobj.domain.Student;
+import hw.responseobj.responsedto.StudentDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
@@ -16,25 +17,30 @@ public class StudentRepository {
     public Map<Long, Student> studentMap = new HashMap<>();
 
     public Student save(Student student) {
-        studentMap.put(++sequense, student);
+        student.setId(++sequense);
+        studentMap.put(sequense, student);
         return student;
     }
 
-    public Student findById(Long id) {
-        return studentMap.get(id);
+    public StudentDto findById(Long id) {
+
+        Student findStudent = studentMap.get(id);
+        return new StudentDto(findStudent.getName(), findStudent.getGrade());
     }
 
-    public List<Student> findAll() {
+    public List<StudentDto> findAll() {
         return studentMap.values()
-                         .stream()
-                         .sorted(Comparator.comparingInt(Student::getGrade))
-                         .toList();
+                .stream()
+                .sorted(Comparator.comparingInt(Student::getGrade))
+                .map(student -> new StudentDto(student.getName(), student.getGrade()))
+                .toList();
     }
 
-    public List<Student> findAllByGrade(int grade) {
+    public List<StudentDto> findAllByGrade(int grade) {
         return studentMap.values()
-                  .stream()
-                  .filter(student -> student.getGrade() == grade)
-                  .toList();
+                .stream()
+                .filter(student -> student.getGrade() == grade)
+                .map(student -> new StudentDto(student.getName(), student.getGrade()))
+                .toList();
     }
 }

@@ -2,6 +2,7 @@ package hw.responseobj.service;
 
 import hw.responseobj.domain.Student;
 import hw.responseobj.repository.StudentRepository;
+import hw.responseobj.responsedto.StudentDto;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
@@ -38,7 +39,7 @@ class StudentServiceTest {
         service.save(student2);
 
 
-        List<Student> allStudents = repository.findAll();
+        List<StudentDto> allStudents = repository.findAll();
         assertThat(allStudents.size())
                   .isEqualTo(2);
     }

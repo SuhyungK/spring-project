@@ -3,6 +3,7 @@ package hw.responseobj.service;
 import hw.responseobj.domain.Student;
 import hw.responseobj.exception.CustomException;
 import hw.responseobj.repository.StudentRepository;
+import hw.responseobj.responsedto.StudentDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -19,15 +20,15 @@ public class StudentService {
         return studentRepository.save(student);
     }
 
-    public Student findById(Long id) {
+    public StudentDto findById(Long id) {
         return studentRepository.findById(id);
     }
 
-    public List<Student> findAll() {
+    public List<StudentDto> findAll() {
         return studentRepository.findAll();
     }
 
-    public List<Student> findByGrade(int grade) {
+    public List<StudentDto> findByGrade(int grade) {
         return studentRepository.findAllByGrade(grade);
     }
 }

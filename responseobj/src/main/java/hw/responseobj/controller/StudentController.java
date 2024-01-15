@@ -7,25 +7,29 @@ import hw.responseobj.exception.ErrorCode;
 import hw.responseobj.exception.ErrorResponse;
 import hw.responseobj.exception.InputRestriction;
 import hw.responseobj.responsedto.ApiResponse;
+import hw.responseobj.responsedto.StudentDto;
 import hw.responseobj.service.StudentService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 import static hw.responseobj.responsedto.ApiResponse.makeResponse;
 
 @Slf4j
-@RestController
 @RequestMapping("/api/student")
+@Controller
 @RequiredArgsConstructor
 public class StudentController {
     private final int MAX_GRADE = 6;
     private final StudentService studentService;
 
     @ExceptionHandler(CustomException.class)
+    @ResponseBody
     public ErrorResponse customExceptionHandler(HttpServletResponse response, CustomException e) {
         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         int code = 5000;
@@ -35,7 +39,7 @@ public class StudentController {
     }
 
     @PostMapping
-    public ApiResponse<Student> addScore(@ModelAttribute Student student) {
+    public void addScore(@ModelAttribute Student student, HttpServletResponse response) throws IOException {
         if (student.getGrade() >= MAX_GRADE) {
             throw new CustomException(
                     ErrorCode.SERVER_ERROR,
@@ -44,33 +48,39 @@ public class StudentController {
             );
         }
         studentService.save(student);
-        return makeResponse(student);
+        response.sendRedirect("/api/student/" + student.getId());
+//        return "redirect:/api/student/" + student.getId();
+//        return makeResponse(student);
     }
 
     @GetMapping("/{id}")
-    public ApiResponse<Student> getStudentInfo(@PathVariable Long id) {
-        Student student = studentService.findById(id);
-        return makeResponse(student);
+    @ResponseBody
+    public ApiResponse<StudentDto> getStudentInfo(@PathVariable Long id) {
+        StudentDto studentDto = studentService.findById(id);
+        return makeResponse(studentDto);
     }
 
     @GetMapping("/list")
-    public ApiResponse<List<Student>> scores() {
+    @ResponseBody
+    public ApiResponse<List<StudentDto>> scores() {
         return makeResponse(studentService.findAll());
     }
 
     @GetMapping("/error")
-    public ApiResponse<List<Student>> error() {
+    @ResponseBody
+    public ApiResponse<List<StudentDto>> error() {
         method();
         return makeResponse(studentService.findAll());
     }
 
     @PostMapping("/grade")
-    public ApiResponse<List<Student>> findStudentByGrade(int grade) {
-        List<Student> findStudentsByGrade = studentService.findByGrade(grade);
+    @ResponseBody
+    public ApiResponse<List<StudentDto>> findStudentByGrade(int grade) {
+        List<StudentDto> findStudentsByGrade = studentService.findByGrade(grade);
         return makeResponse(findStudentsByGrade);
     }
 
-    public void method() {
+    private void method() {
         try {
             inner();
             log.info("에러");
@@ -79,7 +89,7 @@ public class StudentController {
         }
     }
 
-    public void inner() {
+    private void inner() {
         throw new CustomException(ErrorCode.SERVER_ERROR, "grade 는 6 이상을 입력 할 수 없습니다.", new InputRestriction((MAX_GRADE)));
     }
 }

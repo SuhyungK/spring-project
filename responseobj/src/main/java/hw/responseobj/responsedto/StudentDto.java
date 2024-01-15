@@ -1,14 +1,11 @@
-package hw.responseobj.domain;
+package hw.responseobj.responsedto;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 
 @Getter
-@Setter
 @RequiredArgsConstructor
-public class Student {
-    public Long id;
+public class StudentDto {
     private final String name;
     private final int grade;
 }
