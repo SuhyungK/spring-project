@@ -6,23 +6,24 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 @Getter @Setter @AllArgsConstructor @NoArgsConstructor
-@EqualsAndHashCode(of = "id") @Builder
+@EqualsAndHashCode(of = "id")
+@Builder
 @Entity
 public class Event {
 
+    @Id @GeneratedValue
+    private Integer id;
     private String name;
     private String description;
     private LocalDateTime beginEnrollmentDateTime;
     private LocalDateTime closeEnrollmentDateTime;
     private LocalDateTime beginEventDateTime;
     private LocalDateTime endEventDateTime;
-    private String location; // (optional)
+    private String location; // (optional) 이게 없으면 온라인 모임
     private int basePrice; // (optional)
     private int maxPrice; // (optional)
-    private int limitOfEnrollment; // (optional)
+    private int limitOfEnrollment;
 
-    @Id @GeneratedValue
-    private Integer id;
     private boolean offline;
     private boolean free;
 
