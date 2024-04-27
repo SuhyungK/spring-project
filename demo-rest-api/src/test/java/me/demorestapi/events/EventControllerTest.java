@@ -2,15 +2,13 @@ package me.demorestapi.events;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import me.demorestapi.common.TestDescription;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -40,10 +38,8 @@ public class EventControllerTest {
     @Autowired
     EventRepository eventRepository;
 
-//    @MockBean
-//    EventRepository eventRepository;
-
     @Test
+    @TestDescription("정상적으로 이벤트를 생성하는 테스트")
     public void createEvent() throws Exception {
         EventDto eventDto = EventDto.builder()
                                     .name("이벤트 이름")
@@ -74,6 +70,7 @@ public class EventControllerTest {
     }
 
     @Test
+    @TestDescription("입력 받을 수 없는 값을 사용한 경우에 에러가 발생하는 테스트")
     public void createEvent_Bad_Request() throws Exception {
         Event event = Event.builder()
                            .id(100)
@@ -103,6 +100,7 @@ public class EventControllerTest {
     }
 
     @Test
+    @TestDescription("입력 값이 비어 있는 경우 에러 발생 테스트")
     public void createEvent_Bad_Request_Empty_Input() throws Exception {
         EventDto eventDto = EventDto.builder()
                                     .build();
@@ -114,6 +112,7 @@ public class EventControllerTest {
     }
 
     @Test
+    @TestDescription("입력 값이 잘못된 경우 에러가 발생하는 테스트")
     public void createEvent_Bad_Request_Wrong_Input() throws Exception {
         EventDto eventDto = EventDto.builder()
                                     .name("이벤트 이름")
