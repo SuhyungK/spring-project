@@ -1,2 +1,8 @@
-package me.demorestapi.events;public enum EventStatus {
+package me.demorestapi.events;
+
+public enum EventStatus {
+
+    DRAFT,
+    PUBLISHED,
+    BEGAN_ENROLLMENT
 }
