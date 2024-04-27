@@ -28,9 +28,8 @@ public class EventController {
 
         Event newEvent = this.eventRepository.save(event);
 
-        URI createdUri = linkTo(EventController.class).slash("{id}")
+        URI createdUri = linkTo(EventController.class).slash(newEvent.getId())
                                                       .toUri();
-        event.setId(newEvent.getId());
         return ResponseEntity.created(createdUri)
                              .body(event);
     }
