@@ -3,9 +3,10 @@ package me.demorestapi.events;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import me.demorestapi.common.ErrorsSerializer;
 import org.modelmapper.ModelMapper;
-import org.springframework.http.MediaType;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.MediaTypes;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.Errors;
@@ -20,7 +21,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 @Slf4j
 @Controller
 @RequiredArgsConstructor
-@RequestMapping(value = "/api/events", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/api/events", produces = MediaTypes.HAL_JSON_VALUE)
 public class EventController {
 
     private final EventRepository eventRepository;
@@ -30,21 +31,26 @@ public class EventController {
     @PostMapping
     public ResponseEntity createEvent(@RequestBody @Valid EventDto eventDto, Errors errors) {
         if (errors.hasErrors()) {
-            log.info("에러 발생");
             log.info("errors = {}", errors.getAllErrors());
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest()
+                                 .build();
         }
         eventValidator.validate(eventDto, errors);
         if (errors.hasErrors()) {
-            return ResponseEntity.badRequest().body(errors);
+            return ResponseEntity.badRequest()
+                                 .body(errors);
         }
 
         Event event = modelMapper.map(eventDto, Event.class);
         event.update();
         Event newEvent = eventRepository.save(event);
-        URI createdUri = linkTo(EventController.class).slash(newEvent.getId())
-                                                      .toUri();
+        WebMvcLinkBuilder selfLinkBuilder = linkTo(EventController.class).slash(newEvent.getId());
+        URI createdUri = selfLinkBuilder.toUri();
+        EventResource eventResource = new EventResource(event);
+        eventResource.add(linkTo(EventController.class).withRel("query-events"));
+        eventResource.add(selfLinkBuilder.withRel("update-event"));
+        eventResource.add(Link.of("/docs/index.html#resources-events-create").withRel("profile"));
         return ResponseEntity.created(createdUri)
-                             .body(event);
+                             .body(eventResource);
     }
 }
