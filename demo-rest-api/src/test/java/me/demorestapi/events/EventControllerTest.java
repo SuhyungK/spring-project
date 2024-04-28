@@ -50,6 +50,7 @@ public class EventControllerTest {
                                     .endEventDateTime(LocalDateTime.of(2024, 4, 29, 11, 31))
                                     .basePrice(100)
                                     .maxPrice(200)
+                                    .location("강남역 투썸")
                                     .limitOfEnrollment(100)
                                     .build();
 
@@ -66,7 +67,10 @@ public class EventControllerTest {
                .andExpect(header().exists(HttpHeaders.LOCATION))
                .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE))
                .andExpect(jsonPath("id").value(Matchers.not(100)))
-               .andExpect(jsonPath("free").value(Matchers.not(true)));
+               .andExpect(jsonPath("free").value(false))
+               .andExpect(jsonPath("offline").value(true))
+               .andExpect(jsonPath("eventStatus").value(EventStatus.DRAFT.name()))
+        ;
     }
 
     @Test
